@@ -1,18 +1,23 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import { document } from '../utils/dynamodbClient'
 
+interface ICreateUser {
+  deadline: string;
+  title: string;
+}
 export const handler:APIGatewayProxyHandler = async (event)=>{
 
-  const { title, deadline } = JSON.parse(event.body)
-  const {user_id} = event.pathParameters
+  const { title, deadline } = JSON.parse(event.body) as ICreateUser
+
+  const {userid} = event.pathParameters
 
   await document.put({
-    TableName: 'user_serverless',
+    TableName: 'users_serverless',
     Item: {
-      id: '12345', // id gerado para garantir um único todo com o mesmo id
-      user_id, // id do usuário recebido no pathParameters
+      id: '12345', 
+      user_id:userid, 
       title,
-      done: false, // inicie sempre como false
+      done: false, 
       deadline
     }
   }).promise();
@@ -21,7 +26,8 @@ export const handler:APIGatewayProxyHandler = async (event)=>{
     statusCode: 201,
     body:JSON.stringify({
       message: 'user created success',
-      user: user_id
+      user: userid,
+      title
     })
   }
 

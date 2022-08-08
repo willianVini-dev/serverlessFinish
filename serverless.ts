@@ -23,8 +23,21 @@ const serverlessConfiguration: AWS = {
       events: [
         {
           http:{
-            path: "userInsert/{user_id}",
+            path: "todos/{userid}",
             method: 'post',
+            cors: true
+            
+          }
+        }
+      ]
+    },
+    userSelect:{
+      handler: 'src/functions/userSelect.handler',
+      events: [
+        {
+          http:{
+            path: "todos/{userid}",
+            method: 'get',
             cors: true
             
           }
@@ -68,13 +81,13 @@ const serverlessConfiguration: AWS = {
           },
           AttributeDefinitions:[
             {
-              AttributeName: "id", // name attr
+              AttributeName: "user_id", // name attr
               AttributeType: "S", // type attr String
             }
           ],
           KeySchema:[
             {
-              AttributeName: 'id',
+              AttributeName: 'user_id',
               KeyType: 'HASH'
             }
           ]
